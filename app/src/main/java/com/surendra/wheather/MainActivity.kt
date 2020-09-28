@@ -1,19 +1,16 @@
 package com.surendra.wheather
 
-import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
-import android.widget.Button
-import android.widget.EditText
-import android.widget.Toast
-import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.surendra.wheather.details.ForecastDetailsActivity
-import com.surendra.wheather.forecast.CurrentForecastFragment
+import androidx.appcompat.widget.Toolbar
+import androidx.navigation.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.surendra.wheather.forecast.CurrentForecastFragmentDirections
 import com.surendra.wheather.location.LocationEntryFragment
 
 class MainActivity : AppCompatActivity(),AppNavigator {
@@ -27,7 +24,13 @@ class MainActivity : AppCompatActivity(),AppNavigator {
 
         tempDisplaySettingManager= TempDisplaySettingManager(this)
 
-        supportFragmentManager.beginTransaction().add(R.id.fragmentContainer,LocationEntryFragment()).commit()
+        val navController=findNavController(R.id.nav_host_fragment)
+        val appBarConfiguration= AppBarConfiguration(navController.graph) //this will create appBarConfiguration based on our navigation graph
+        //connecting
+        findViewById<Toolbar>(R.id.toolbar).setupWithNavController(navController,appBarConfiguration)
+
+        findViewById<BottomNavigationView>(R.id.bottomNavigationView).setupWithNavController(navController)
+
     }
 
 
@@ -47,14 +50,17 @@ class MainActivity : AppCompatActivity(),AppNavigator {
         }
     }
 
-    override fun navigateToCurrentForecast(zipCode: String) {
-        supportFragmentManager.beginTransaction().replace(R.id.fragmentContainer,CurrentForecastFragment.newInstance(zipCode))
-            .addToBackStack("")
-            .commit()
-    }
 
     override fun navigateToLocationEntry() {
-        supportFragmentManager.beginTransaction().replace(R.id.fragmentContainer,LocationEntryFragment()).commit()
+//        supportFragmentManager.beginTransaction().replace(R.id.fragmentContainer,LocationEntryFragment()).commit()
+
+        val action=CurrentForecastFragmentDirections.actionCurrentForecastFragmentToLocationEntryFragment()
+        findNavController(R.id.nav_host_fragment).navigate(action)
+    }
+
+    override fun navigateToForecastDetail(forecast: DailyForecast) {
+        val action=CurrentForecastFragmentDirections.actionCurrentForecastFragmentToForecastDetailsFragment(forecast.temp,forecast.description)
+        findNavController(R.id.nav_host_fragment).navigate(action)
     }
 
 }
@@ -73,3 +79,7 @@ class MainActivity : AppCompatActivity(),AppNavigator {
 //Step1->Create data class
 //step2-> create repository and define livedata and load the livedata with the values
 //Step3->In the activity/fragment, start observing these values that are emitted by liveData
+
+
+//for navigate from one screen to other using navigation architectural components,
+//first we define actions that will used by the navController to decide what fragment to show next

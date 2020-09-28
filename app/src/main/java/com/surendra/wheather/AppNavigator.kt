@@ -2,9 +2,10 @@ package com.surendra.wheather
 
 interface AppNavigator {
 
-    fun navigateToCurrentForecast(zipCode:String)
 
     fun navigateToLocationEntry()
+
+    fun navigateToForecastDetail(forecast: DailyForecast)
 }
 
 

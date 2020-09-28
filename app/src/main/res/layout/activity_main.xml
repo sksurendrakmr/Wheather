@@ -7,13 +7,58 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <FrameLayout
-        android:id="@+id/fragmentContainer"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimaryDark"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <fragment
+        android:id="@+id/nav_host_fragment"
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:defaultNavHost="true"
+        app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        app:navGraph="@navigation/main_nav" />
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigationView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        android:background="@android:color/white"
+        app:menu="@menu/main_nav"/>
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
+
+<!--we need add a navHost to store the navGraph.
+
+Here we are adding fragmentContainerView that will act as our navHost.
+
+we will give it id and name="androidx.navigation.fragment.NavHostFragment"
+
+Hence now we have fragmentContainerView that will act as our navHost so we need to now
+
+specify as navHost and to do that we set
+app:defaultNavHost="true" and
+ app:navGraph="@navigation/main_nav" -->
+
+
+<!--Bottom navigation has to connect with nav graph
+
+Create menu that will define the items shown in the bottom navigation
+
+app:menu="@menu/main_nav" -> this statement will inflate the menu into the bottom navigationView which will give us icons and labels
+
+Now we need to connect bottom navigation view with the navController-->
