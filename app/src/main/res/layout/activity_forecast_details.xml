@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="2dp"
+    tools:context=".details.ForecastDetailsActivity">
+
+    <TextView
+        android:id="@+id/tvDetailsActivityTemp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display2"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:layout_margin="15dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.045"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.022"
+        tools:text="Temp" />
+
+    <TextView
+        android:id="@+id/tvDetailsActivityDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+        app:layout_constraintEnd_toEndOf="@+id/tvDetailsActivityTemp"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/tvDetailsActivityTemp"
+        app:layout_constraintTop_toBottomOf="@+id/tvDetailsActivityTemp"
+        tools:text="description" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+<!--'0dp' make sure that instead of scaling the text view to wrap the content no matter what the constraints are
+it will honor the constraints and limit the size-->

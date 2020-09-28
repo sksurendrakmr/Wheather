@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".location.LocationEntryFragment">
+
+    <ImageView
+        android:layout_width="@dimen/zip_code_icon_size"
+        android:layout_height="@dimen/zip_code_icon_size"
+        android:src="@drawable/ic_baseline_location_on_24"
+        app:layout_constraintBottom_toTopOf="@+id/textView"
+        app:layout_constraintEnd_toEndOf="@+id/textView"
+        app:layout_constraintStart_toStartOf="@+id/textView" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:text="@string/enter_your_zipcode"
+        android:textSize="@dimen/title"
+        app:layout_constraintBottom_toTopOf="@+id/etEnterZipCode"
+        app:layout_constraintEnd_toEndOf="@+id/etEnterZipCode"
+        app:layout_constraintStart_toStartOf="@+id/etEnterZipCode" />
+
+    <EditText
+        android:id="@+id/etEnterZipCode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="@string/enter_zipcode_here"
+        android:inputType="number"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.458"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.265" />
+
+    <Button
+        android:id="@+id/btnSubmitZipCode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="@string/submit_zipcode"
+        app:layout_constraintEnd_toEndOf="@+id/etEnterZipCode"
+        app:layout_constraintHorizontal_bias="0.521"
+        app:layout_constraintStart_toStartOf="@+id/etEnterZipCode"
+        app:layout_constraintTop_toBottomOf="@+id/etEnterZipCode" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
