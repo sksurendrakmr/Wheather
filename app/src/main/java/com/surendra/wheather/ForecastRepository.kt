@@ -1,30 +1,92 @@
 package com.surendra.wheather
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.surendra.wheather.api.CurrentWeather
+import com.surendra.wheather.api.WeeklyForecast
+import com.surendra.wheather.api.createOpenWeatherMapService
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.text.DecimalFormat
+import java.util.*
 import kotlin.random.Random
 
 //Repository essentially doing two things -> Loading data for us and providing that data to our activity/fragment
 
 class ForecastRepository {
 
-    private val _weeklyForecast=MutableLiveData<List<DailyForecast>>() //used this property to update the data
-    val weeklyForecast :LiveData<List<DailyForecast>> = _weeklyForecast
+    private val _currentWeather=MutableLiveData<CurrentWeather>()
+    val currentWeather:LiveData<CurrentWeather> =_currentWeather
+
+    private val _weeklyForecast=MutableLiveData<WeeklyForecast>() //used this property to update the data
+    val weeklyForecast :LiveData<WeeklyForecast> = _weeklyForecast
 
     //loading the data
-    fun loadForecast(zipCode:String){
+    fun loadWeeklyForecast(zipCode:String){
 
-        val randomValues= List(7){
-            //how the seven item will be created
-//            val df=DecimalFormat("#.##")
-//            df.format(Random.nextFloat().rem(100)*100).toFloat()
-            Random.nextFloat().rem(100)*100
-        }
-        val forecastItems=randomValues.map {temp->
-            DailyForecast(temp,getTempDescription(temp))
-        }
-        _weeklyForecast.value=forecastItems
+        //for weekly forecast, the api doesn't provide zipcode, it provide lan and long
+        //so first we make a call to the currentWeather endPoint as it will return us lat nad long
+        //then we use lat and long to call the second endPoint and get the seven day forecast
+
+        val call= createOpenWeatherMapService().currentWeather(zipCode,"imperial",BuildConfig.OPEN_WEATHER_MAP_API_KEY)
+        call.enqueue(object : Callback<CurrentWeather>{
+            override fun onResponse(call: Call<CurrentWeather>, response: Response<CurrentWeather>) {
+                val weatherResponse=response.body()
+                if (weatherResponse!=null){
+                    //load seven day forecast
+                    val forecastCall= createOpenWeatherMapService().sevenDayForecast(
+                        lat = weatherResponse.coord.lat,
+                        lon = weatherResponse.coord.lon,
+                        exclude ="current,minutely,hourly",
+                        units = "imperial",
+                        apiKey = BuildConfig.OPEN_WEATHER_MAP_API_KEY
+                    )
+                    forecastCall.enqueue(object:Callback<WeeklyForecast>{
+                        override fun onResponse(
+                            call: Call<WeeklyForecast>,
+                            response: Response<WeeklyForecast>
+                        ) {
+                            val weeklyForecastResponse=response.body()
+                            if (weeklyForecastResponse!=null){
+                                _weeklyForecast.value=weeklyForecastResponse
+                            }
+                        }
+
+                        override fun onFailure(call: Call<WeeklyForecast>, t: Throwable) {
+                            Log.e(ForecastRepository::class.java.simpleName,"Error loading weekly forecast",t)
+                        }
+
+                    })
+                }
+            }
+
+            override fun onFailure(call: Call<CurrentWeather>, t: Throwable) {
+                Log.e(ForecastRepository::class.java.simpleName,"Error while loading location for weekly forecast",t)
+            }
+        })
+
+    }
+
+    fun loadCurrentForecast(zipcode:String) {
+       //creating a call class that represents that request to the endpoint we want
+        val call = createOpenWeatherMapService().currentWeather(zipcode,"imperial",BuildConfig.OPEN_WEATHER_MAP_API_KEY)
+        //using this call to get response back
+        call.enqueue(object :Callback<CurrentWeather> {
+            override fun onResponse(call: Call<CurrentWeather>, response: Response<CurrentWeather>) {
+                val weatherResponse=response.body()
+                if (weatherResponse != null){
+                    _currentWeather.value=weatherResponse
+                }
+            }
+
+            override fun onFailure(call: Call<CurrentWeather>, t: Throwable) {
+                Log.e(ForecastRepository::class.java.simpleName,"Error loading current weather",t)
+            }
+
+        })
+
     }
 
     private fun getTempDescription(temp:Float):String{

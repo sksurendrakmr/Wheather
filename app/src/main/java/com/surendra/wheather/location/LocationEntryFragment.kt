@@ -11,13 +11,15 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import com.surendra.wheather.AppNavigator
+import com.surendra.wheather.Location
+import com.surendra.wheather.LocationRepository
 import com.surendra.wheather.R
 
 
 
 class LocationEntryFragment : Fragment() {
 
-
+    private lateinit var locationRepository: LocationRepository
     private lateinit var appNavigator: AppNavigator
 
     override fun onAttach(context: Context) {
@@ -38,6 +40,8 @@ class LocationEntryFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
+        locationRepository= LocationRepository(requireContext())
         super.onViewCreated(view, savedInstanceState)
         val etEnterZipCode: EditText =view.findViewById(R.id.etEnterZipCode)
         val btnSubmitZipCode: Button =view.findViewById(R.id.btnSubmitZipCode)
@@ -49,6 +53,7 @@ class LocationEntryFragment : Fragment() {
             }
             else{
 //                Toast.makeText(requireContext(),"Button Clicked $zipCode",Toast.LENGTH_SHORT).show()
+                locationRepository.saveLocation(Location.ZipCode(zipCode))
               findNavController().navigateUp()
             }
         }

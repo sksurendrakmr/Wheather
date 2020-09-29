@@ -3,21 +3,33 @@ package com.surendra.wheather
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
+import com.surendra.wheather.api.DailyForecast
+import java.text.SimpleDateFormat
 import java.util.*
+
+private val DATE_FORMAT=SimpleDateFormat("MM-dd-yyyy")
 
 class DailyForecastViewHolder(view: View, private val tempDisplaySettingManager: TempDisplaySettingManager) : RecyclerView.ViewHolder(view){
 //viewHolder is responsible for binding the individual view
     private val tvTemp=view.findViewById<TextView>(R.id.tvTemp)
     private val tvdescription : TextView=view.findViewById(R.id.tvDescription)
+    private val dateText=view.findViewById<TextView>(R.id.dateText)
+    private val forecastIcon=view.findViewById<ImageView>(R.id.forecastIcon)
 
     //this method is called from adapter onBind method and it's where we are going to connect individual daily forecastItem to those views we just referenced
     fun bind(dailyForecast: DailyForecast){
-        tvTemp.text= formatTempToDisplay(dailyForecast.temp,tempDisplaySettingManager.getTempDisplaySetting())
-        tvdescription.text=dailyForecast.description
+        tvTemp.text= formatTempToDisplay(dailyForecast.temp.max,tempDisplaySettingManager.getTempDisplaySetting())
+        tvdescription.text=dailyForecast.weather[0].description
+        dateText.text= DATE_FORMAT.format(Date(dailyForecast.date*1000))
+
+        val iconId=dailyForecast.weather[0].icon
+        forecastIcon.load("http://openweathermap.org/img/wn/${iconId}@2x.png")
     }
 }
 

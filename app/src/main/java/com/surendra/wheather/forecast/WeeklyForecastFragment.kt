@@ -13,6 +13,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.surendra.wheather.*
+import com.surendra.wheather.api.DailyForecast
+import com.surendra.wheather.api.WeeklyForecast
 import com.surendra.wheather.details.ForecastDetailsFragment
 
 
@@ -21,6 +23,7 @@ class WeeklyForecastFragment : Fragment() {
     private lateinit var tempDisplaySettingManager: TempDisplaySettingManager
     private val forecastRepository= ForecastRepository()
     private lateinit var appNavigator: AppNavigator
+    private lateinit var locationRepository: LocationRepository
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -56,23 +59,34 @@ class WeeklyForecastFragment : Fragment() {
 
 
         //observing the data from LiveData(adding the observer to this repository, the observer is let us know when updates are made)
-        val weeklyForecastObserver= Observer<List<DailyForecast>>{ forecastItem->
+        val weeklyForecastObserver= Observer<WeeklyForecast>{ weeklyForecast ->
             //items available in this lambda is forecastItems(defined in repository)
             //we will update the recyclerview adapter  with this forecastItem
-            dailyForecastAdapter.submitList(forecastItem)
+            dailyForecastAdapter.submitList(weeklyForecast.daily)
         }
         forecastRepository.weeklyForecast.observe(viewLifecycleOwner, weeklyForecastObserver)
-        forecastRepository.loadForecast(zipcode)
 
 
         val locationEntryButton=view.findViewById<FloatingActionButton>(R.id.locationEntryButton)
         locationEntryButton.setOnClickListener {
-            appNavigator.navigateToLocationEntry()
+            val action=WeeklyForecastFragmentDirections.actionWeeklyForecastFragmentToLocationEntryFragment()
+            findNavController().navigate(action)
         }
+
+        locationRepository= LocationRepository(requireContext())
+        val savedLocationRepository=Observer<Location>{savedLocation->
+            when(savedLocation){
+                is Location.ZipCode->forecastRepository.loadWeeklyForecast(savedLocation.zipCode)
+            }
+        }
+        locationRepository.savedLocation.observe(viewLifecycleOwner,savedLocationRepository)
+
     }
 
-    private fun showForeCastDetails(forecast:DailyForecast){
-        val action=WeeklyForecastFragmentDirections.actionWeeklyForecastFragmentToForecastDetailsFragment(forecast.temp,forecast.description)
+    private fun showForeCastDetails(forecast: DailyForecast){
+        val temp=forecast.temp.max
+        val description=forecast.weather[0].description
+        val action=WeeklyForecastFragmentDirections.actionWeeklyForecastFragmentToForecastDetailsFragment(temp,description)
         findNavController().navigate(action)
     }
 

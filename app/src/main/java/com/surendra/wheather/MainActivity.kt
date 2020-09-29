@@ -58,10 +58,10 @@ class MainActivity : AppCompatActivity(),AppNavigator {
         findNavController(R.id.nav_host_fragment).navigate(action)
     }
 
-    override fun navigateToForecastDetail(forecast: DailyForecast) {
-        val action=CurrentForecastFragmentDirections.actionCurrentForecastFragmentToForecastDetailsFragment(forecast.temp,forecast.description)
-        findNavController(R.id.nav_host_fragment).navigate(action)
-    }
+//    override fun navigateToForecastDetail(forecast: DailyForecast) {
+//        val action=CurrentForecastFragmentDirections.actionCurrentForecastFragmentToForecastDetailsFragment(forecast.temp,forecast.description)
+//        findNavController(R.id.nav_host_fragment).navigate(action)
+//    }
 
 }
 

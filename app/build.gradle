@@ -4,6 +4,10 @@ apply plugin: 'kotlin-android-extensions'
 
 apply plugin: "androidx.navigation.safeargs"
 
+//load any information that local.properties would have
+def localProperties=new Properties()
+localProperties.load(new FileInputStream(rootProject.file("local.properties")))
+
 android {
     compileSdkVersion 30
     buildToolsVersion "30.0.1"
@@ -16,6 +20,8 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String","OPEN_WEATHER_MAP_API_KEY","\"${localProperties["OPEN_WEATHER_MAP_API_KEY"]}\"")
     }
 
     buildTypes {
@@ -47,6 +53,11 @@ dependencies {
 
     implementation "androidx.navigation:navigation-fragment-ktx:2.3.0"
     implementation "androidx.navigation:navigation-ui-ktx:2.3.0"
+    implementation 'com.squareup.retrofit2:retrofit:2.8.2'
+    implementation "com.squareup.retrofit2:converter-moshi:2.5.0"
+    implementation("io.coil-kt:coil:1.0.0-rc3")
+
+
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'

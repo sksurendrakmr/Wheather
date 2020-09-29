@@ -5,7 +5,7 @@ interface AppNavigator {
 
     fun navigateToLocationEntry()
 
-    fun navigateToForecastDetail(forecast: DailyForecast)
+//    fun navigateToForecastDetail(forecast: DailyForecast)
 }
 
 
